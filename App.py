@@ -64,21 +64,21 @@ MainScreen:
 
     # Label and Dropdown 3
     MDLabel:
-        text: "Dropdown Menu 3"  # Change this text to modify the label above the third dropdown
+        text: "Pure Fiction (Stars)"  # Change this text to modify the label above the third dropdown
         halign: "center"
     MDRaisedButton:
         id: dropdown_btn_3
-        text: "Select Option 3"  # Initial text for the third dropdown button
+        text: "Select"  # Initial text for the third dropdown button
         size_hint_x: 1  # Take up the entire width
         on_release: app.menu_3.open()
 
     # Label and Dropdown 4
     MDLabel:
-        text: "Dropdown Menu 4"  # Change this text to modify the label above the fourth dropdown
+        text: "Apocalyptic Shadow (Stars)"  # Change this text to modify the label above the fourth dropdown
         halign: "center"
     MDRaisedButton:
         id: dropdown_btn_4
-        text: "Select Option 4"  # Initial text for the fourth dropdown button
+        text: "Select"  # Initial text for the fourth dropdown button
         size_hint_x: 1  # Take up the entire width
         on_release: app.menu_4.open()
     
@@ -108,11 +108,11 @@ class MyApp(MDApp):
         self.screen = Builder.load_string(KV)
         
         # Initial menu items for dropdowns
-        menu_items_1 = [{"text": f"{i+1}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i+1}": self.set_item_1(x)} for i in range(6)]
+        menu_items_1 = [{"text": f"{i}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i}": self.set_item_1(x)} for i in range(7)]
         self.menu_items_2_set_1 = [{"text": f"{i}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i}": self.set_item_2(x)} for i in range(0,13)]
         self.menu_items_2_set_2 = [{"text": f"{i}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i}": self.set_item_2(x)} for i in range(0, 39, 3)]
-        menu_items_3 = [{"text": f"Option {i+1}", "viewclass": "OneLineListItem", "on_release": lambda x=f"Option {i+1}": self.set_item_3(x)} for i in range(5)]
-        menu_items_4 = [{"text": f"Option {i+1}", "viewclass": "OneLineListItem", "on_release": lambda x=f"Option {i+1}": self.set_item_4(x)} for i in range(5)]
+        menu_items_3 = [{"text": f"{i}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i}": self.set_item_3(x)} for i in range(13)]
+        menu_items_4 = [{"text": f"{i}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i}": self.set_item_4(x)} for i in range(13)]
 
         # Create dropdown menus for each button
         # The caller argument connects the dropdown to the correct button
