@@ -14,8 +14,18 @@ MainScreen:
     orientation: 'vertical'
     spacing: 20
     padding: 20
-    
-    # Label and Dropdown 1
+
+    # Label and Dropdown for the new menu
+    MDLabel:
+        text: "New Dropdown Menu"  # Change this text to modify the label above the new dropdown
+        halign: "center"
+    MDRaisedButton:
+        id: dropdown_btn_new
+        text: "Select New"  # Initial text for the new dropdown button
+        size_hint_x: 1  # Take up the entire width
+        on_release: app.menu_new.open()
+
+    # Existing Label and Dropdown 1
     MDLabel:
         text: "Equilibrium Level"  # Change this text to modify the label above the first dropdown
         halign: "center"
@@ -58,7 +68,7 @@ MainScreen:
     # Dropdown 2 (Options controlled by switch)
     MDRaisedButton:
         id: dropdown_btn_2
-        text: "Select Option 2"  # Initial text for the second dropdown button
+        text: "Select"  # Initial text for the second dropdown button
         size_hint_x: 1  # Take up the entire width
         on_release: app.menu_2.open()
 
@@ -97,6 +107,7 @@ MainScreen:
         height: self.texture_size[1]
 '''
 
+
 # Define the main screen layout
 class MainScreen(MDBoxLayout):
     pass
@@ -106,8 +117,9 @@ class MyApp(MDApp):
     def build(self):
         # Load the KV string and set it as the root widget
         self.screen = Builder.load_string(KV)
-        
+
         # Initial menu items for dropdowns
+        menu_items_new = [{"text": f"New Option {i+1}", "viewclass": "OneLineListItem", "on_release": lambda x=f"New Option {i+1}": self.set_item_new(x)} for i in range(5)]
         menu_items_1 = [{"text": f"{i}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i}": self.set_item_1(x)} for i in range(7)]
         self.menu_items_2_set_1 = [{"text": f"{i}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i}": self.set_item_2(x)} for i in range(0,13)]
         self.menu_items_2_set_2 = [{"text": f"{i}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i}": self.set_item_2(x)} for i in range(0, 39, 3)]
@@ -115,7 +127,12 @@ class MyApp(MDApp):
         menu_items_4 = [{"text": f"{i}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i}": self.set_item_4(x)} for i in range(13)]
 
         # Create dropdown menus for each button
-        # The caller argument connects the dropdown to the correct button
+        self.menu_new = MDDropdownMenu(
+            caller=self.screen.ids.dropdown_btn_new,
+            items=menu_items_new,  # The options for the new dropdown
+            width_mult=4,  # Width multiplier for the dropdown menu
+        )
+
         self.menu_1 = MDDropdownMenu(
             caller=self.screen.ids.dropdown_btn_1,
             items=menu_items_1,  # The options for the first dropdown
@@ -139,11 +156,14 @@ class MyApp(MDApp):
             items=menu_items_4,  # The options for the fourth dropdown
             width_mult=4,
         )
-        
+
         return self.screen
 
     # Methods to set the selected item for each dropdown
-    # These methods are called when an option is selected from the dropdown
+    def set_item_new(self, text_item):
+        self.screen.ids.dropdown_btn_new.text = text_item
+        self.menu_new.dismiss()  # Close the dropdown menu after selection
+
     def set_item_1(self, text_item):
         self.screen.ids.dropdown_btn_1.text = text_item
         self.menu_1.dismiss()  # Close the dropdown menu after selection
@@ -161,7 +181,6 @@ class MyApp(MDApp):
         self.menu_4.dismiss()
 
     # Method to handle the switch toggle
-    # This method updates the options in the second dropdown menu based on the switch position
     def update_menu_2(self, is_active):
         if is_active:
             self.menu_2.items = self.menu_items_2_set_2  # Switch to Option Set 2
@@ -172,6 +191,7 @@ class MyApp(MDApp):
     def on_button_press(self):
         # Get the selected options from all dropdowns
         selected_options = [
+            self.screen.ids.dropdown_btn_new.text,
             self.screen.ids.dropdown_btn_1.text,
             self.screen.ids.dropdown_btn_2.text,
             self.screen.ids.dropdown_btn_3.text,
