@@ -6,6 +6,7 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.label import MDLabel
+from kivymd.uix.selectioncontrol import MDSwitch
 
 # Define the layout of the app using KV language
 KV = '''
@@ -24,13 +25,40 @@ MainScreen:
         size_hint_x: 1  # Take up the entire width
         on_release: app.menu_1.open()
 
-    # Label and Dropdown 2
+    # Label and Selector for Dropdown 2
     MDLabel:
-        text: "MOC Stages (Fully Cleared)"  # Change this text to modify the label above the second dropdown
+        text: "Memory Of Chaos"  # Change this text to modify the label above the second dropdown
         halign: "center"
+
+    # GridLayout for Switch and Labels
+    GridLayout:
+        cols: 3
+        size_hint_x: 0.6  # Adjust width of the entire layout
+        pos_hint: {"center_x": 0.475}  # Center horizontally
+        spacing: 20
+        
+        MDLabel:
+            text: "Stages"
+            halign: "left"
+            size_hint_x: 0.2  # Adjust the size_hint_x to make labels and switch align better
+        
+        MDSwitch:
+            id: option_switch
+            on_active: app.update_menu_2(self.active)
+            size_hint_x: 0.2  # Reduce the size of the switch (less wide)
+            size_hint: None, None  # Disable size hints to allow setting custom width
+            width: 40  # Set the width of the switch explicitly
+            height: dp(48)  # Set the height of the switch explicitly to maintain aspect ratio
+        
+        MDLabel:
+            text: "Stars"
+            halign: "right"
+            size_hint_x: 0.2  # Adjust the size_hint_x to make labels and switch align better
+
+    # Dropdown 2 (Options controlled by switch)
     MDRaisedButton:
         id: dropdown_btn_2
-        text: "Select"  # Initial text for the second dropdown button
+        text: "Select Option 2"  # Initial text for the second dropdown button
         size_hint_x: 1  # Take up the entire width
         on_release: app.menu_2.open()
 
@@ -79,30 +107,33 @@ class MyApp(MDApp):
         # Load the KV string and set it as the root widget
         self.screen = Builder.load_string(KV)
         
-        # Menu items for each dropdown menu
-        # Change the text in these dictionaries to modify the dropdown options
+        # Initial menu items for dropdowns
         menu_items_1 = [{"text": f"{i+1}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i+1}": self.set_item_1(x)} for i in range(6)]
-        menu_items_2 = [{"text": f"{i+1}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i+1}": self.set_item_2(x)} for i in range(12)]
+        self.menu_items_2_set_1 = [{"text": f"{i}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i}": self.set_item_2(x)} for i in range(0,13)]
+        self.menu_items_2_set_2 = [{"text": f"{i}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i}": self.set_item_2(x)} for i in range(0, 39, 3)]
         menu_items_3 = [{"text": f"Option {i+1}", "viewclass": "OneLineListItem", "on_release": lambda x=f"Option {i+1}": self.set_item_3(x)} for i in range(5)]
         menu_items_4 = [{"text": f"Option {i+1}", "viewclass": "OneLineListItem", "on_release": lambda x=f"Option {i+1}": self.set_item_4(x)} for i in range(5)]
 
         # Create dropdown menus for each button
-        # The `caller` argument connects the dropdown to the correct button
+        # The caller argument connects the dropdown to the correct button
         self.menu_1 = MDDropdownMenu(
             caller=self.screen.ids.dropdown_btn_1,
             items=menu_items_1,  # The options for the first dropdown
             width_mult=4,  # Width multiplier for the dropdown menu
         )
+
         self.menu_2 = MDDropdownMenu(
             caller=self.screen.ids.dropdown_btn_2,
-            items=menu_items_2,  # The options for the second dropdown
+            items=self.menu_items_2_set_1,  # Initially use Option Set 1 for the second dropdown
             width_mult=4,
         )
+
         self.menu_3 = MDDropdownMenu(
             caller=self.screen.ids.dropdown_btn_3,
             items=menu_items_3,  # The options for the third dropdown
             width_mult=4,
         )
+
         self.menu_4 = MDDropdownMenu(
             caller=self.screen.ids.dropdown_btn_4,
             items=menu_items_4,  # The options for the fourth dropdown
@@ -128,6 +159,14 @@ class MyApp(MDApp):
     def set_item_4(self, text_item):
         self.screen.ids.dropdown_btn_4.text = text_item
         self.menu_4.dismiss()
+
+    # Method to handle the switch toggle
+    # This method updates the options in the second dropdown menu based on the switch position
+    def update_menu_2(self, is_active):
+        if is_active:
+            self.menu_2.items = self.menu_items_2_set_2  # Switch to Option Set 2
+        else:
+            self.menu_2.items = self.menu_items_2_set_1  # Switch to Option Set 1
 
     # Method to handle the Submit button press
     def on_button_press(self):
