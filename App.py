@@ -220,6 +220,8 @@ class MyApp(MDApp):
         
         daily = Jade_Calc.daily(days=Calc_Days.calc_delta(self.list2[self.selected_new_index]))
         print(daily)
+        weekly_su = Jade_Calc.weekly_su(weeks=Calc_Weeks.calc_delta(self.list2[self.selected_new_index]) ,eq_level=int(self.screen.ids.dropdown_btn_1.text))
+        print(weekly_su)
         self.screen.ids.result_label.text = result_text
 
 # Run the app

@@ -1,3 +1,5 @@
+import Count_Days
+
 class Jade_Calc:
     def daily(days) -> int:
         return days*60
@@ -37,3 +39,4 @@ class Jade_Calc:
 if __name__ == "__main__":
     test = Jade_Calc
     print(f"Daily: {test.daily(days=3)}\nMOC(stage): {test.moc_stage(stage=7)}\nMOC(stars): {test.moc_stars(stars=21)}")
+    print(f'Weekly SU: {Jade_Calc.weekly_su(Count_Days.Calc_Weeks.calc_delta("2024-8-30"),6)}')

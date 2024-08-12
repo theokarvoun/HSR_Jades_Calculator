@@ -1,4 +1,5 @@
 import datetime
+import math
 
 class Calc_Days:
     def current_date():
@@ -17,7 +18,7 @@ class Calc_Weeks:
         return datetime.datetime(int(end_date_tokens[0]),int(end_date_tokens[1]),int(end_date_tokens[2]))
     def calc_delta(end_date) -> int:
         #print(Calc_Weeks.current())
-        return int((Calc_Weeks.get_end_date(end_date)-Calc_Weeks.current()).days/7)
+        return math.floor((Calc_Weeks.get_end_date(end_date)-Calc_Weeks.current()).days/7)
 
 if __name__ == "__main__":
     test = Calc_Days
