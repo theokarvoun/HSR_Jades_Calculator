@@ -116,6 +116,8 @@ class MainScreen(MDBoxLayout):
 
 # Define the main application class
 class MyApp(MDApp):
+    list1 = None
+    list2 = None
     def build(self):
 
         url1 = "https://docs.google.com/spreadsheets/d/12SYPRGPIVJ2-bY01ksF4aqdinZDbyD-LN2ipeB5i6T0/export?format=csv&gid=0"
@@ -207,7 +209,6 @@ class MyApp(MDApp):
             self.screen.ids.dropdown_btn_3.text,
             self.screen.ids.dropdown_btn_4.text
         ]
-        
         # Display the selected options in the result label
         self.screen.ids.result_label.text = f"Selected Options: {', '.join(selected_options)}"
 
