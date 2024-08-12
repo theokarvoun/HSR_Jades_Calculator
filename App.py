@@ -1,5 +1,7 @@
 from Jade_Calc import Jade_Calc
 from Count_Days import Calc_Days, Calc_Weeks
+from Files import FileReader as reader
+from WebScraper import Scraper
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
@@ -17,11 +19,11 @@ MainScreen:
 
     # Label and Dropdown for the new menu
     MDLabel:
-        text: "New Dropdown Menu"  # Change this text to modify the label above the new dropdown
+        text: "Select Upcoming Version"  # Change this text to modify the label above the new dropdown
         halign: "center"
     MDRaisedButton:
         id: dropdown_btn_new
-        text: "Select New"  # Initial text for the new dropdown button
+        text: "Select"  # Initial text for the new dropdown button
         size_hint_x: 1  # Take up the entire width
         on_release: app.menu_new.open()
 
@@ -115,11 +117,19 @@ class MainScreen(MDBoxLayout):
 # Define the main application class
 class MyApp(MDApp):
     def build(self):
+
+        url1 = "https://docs.google.com/spreadsheets/d/12SYPRGPIVJ2-bY01ksF4aqdinZDbyD-LN2ipeB5i6T0/export?format=csv&gid=0"
+        url2 = "https://docs.google.com/spreadsheets/d/140MawDp6uzxSR6lgICO4USXKe7QektrSHRstomDdsVs/export?format=csv&gid=0"
+        Scraper.scrapeToFile(data=Scraper.convert_to_string(Scraper.scrape(url1)),name='Data',extension='.txt')
+        Scraper.scrapeToFile(data=Scraper.convert_to_string(Scraper.scrape(url2)),name='Data2',extension='.txt')
+        list1 = reader.extractDates(reader.readFileAsList(name='Data',extension='.txt'))
+        list2 = reader.extractDates(reader.readFileAsList(name='Data2',extension='.txt'))
+        text = reader.extractText(reader.readFileAsList(name='Data2',extension='.txt'))
         # Load the KV string and set it as the root widget
         self.screen = Builder.load_string(KV)
 
         # Initial menu items for dropdowns
-        menu_items_new = [{"text": f"New Option {i+1}", "viewclass": "OneLineListItem", "on_release": lambda x=f"New Option {i+1}": self.set_item_new(x)} for i in range(5)]
+        menu_items_new = [{"text": f"{text[i]}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{text[i]}": self.set_item_new(x)} for i in range(3)]
         menu_items_1 = [{"text": f"{i}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i}": self.set_item_1(x)} for i in range(7)]
         self.menu_items_2_set_1 = [{"text": f"{i}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i}": self.set_item_2(x)} for i in range(0,13)]
         self.menu_items_2_set_2 = [{"text": f"{i}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i}": self.set_item_2(x)} for i in range(0, 39, 3)]
@@ -197,6 +207,7 @@ class MyApp(MDApp):
             self.screen.ids.dropdown_btn_3.text,
             self.screen.ids.dropdown_btn_4.text
         ]
+        
         # Display the selected options in the result label
         self.screen.ids.result_label.text = f"Selected Options: {', '.join(selected_options)}"
 

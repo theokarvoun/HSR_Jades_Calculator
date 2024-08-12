@@ -20,6 +20,9 @@ class Scraper:
     @staticmethod
     def convert_to_string(df):
         return df.to_string(index=False)  # `index=False` omits the row numbers
+    
+    def scrapeToFile(data,name,extension):
+        f.FileWriter.writeToFile(content=data, name=name, extension=extension)
 
 if __name__ == '__main__':
     # Correct URLs for CSV export
@@ -27,8 +30,10 @@ if __name__ == '__main__':
     url2 = "https://docs.google.com/spreadsheets/d/140MawDp6uzxSR6lgICO4USXKe7QektrSHRstomDdsVs/export?format=csv&gid=0"
     
     # Scrape and write data to files
-    content1 = Scraper.convert_to_string(Scraper.scrape(url1))
-    f.FileWriter.writeToFile(content=content1, name='Data', extension='.txt')
+    #content1 = Scraper.convert_to_string(Scraper.scrape(url1))
+    #f.FileWriter.writeToFile(content=content1, name='Data', extension='.txt')
+    Scraper.scrapeToFile(data=Scraper.convert_to_string(Scraper.scrape(url1)),name='Data',extension='.txt')
+    Scraper.scrapeToFile(data=Scraper.convert_to_string(Scraper.scrape(url2)),name='Data2',extension='.txt')
     
-    content2 = Scraper.convert_to_string(Scraper.scrape(url2))
-    f.FileWriter.writeToFile(content=content2, name='Data2', extension='.txt')
+    #content2 = Scraper.convert_to_string(Scraper.scrape(url2))
+    #f.FileWriter.writeToFile(content=content2, name='Data2', extension='.txt')
