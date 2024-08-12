@@ -7,6 +7,16 @@ class Calc_Days:
     def calc_delta(date_str):
         date = datetime.datetime.strptime(date_str,"%Y-%m-%d")
         return (date - Calc_Days.current_date()).days
+    def calculate_days_difference(date1_str, date2_str, date_format="%Y-%m-%d"):
+    # Convert the date strings to datetime objects
+        date1 = datetime.datetime.strptime(date1_str, date_format)
+        date2 = datetime.datetime.strptime(date2_str, date_format)
+    
+    # Calculate the difference between the two dates
+        difference = date2 - date1
+    
+    # Return the difference in days
+        return difference.days
 
 class Calc_Weeks:
     def current():
@@ -23,4 +33,5 @@ class Calc_Weeks:
 if __name__ == "__main__":
     test = Calc_Days
     print(Calc_Weeks.calc_delta('2024-08-30'))
+    print(Calc_Days.calculate_days_difference(date1_str='2024-08-12',date2_str='2024-08-30'))
     #print(test.calc_delta('2024-08-30'))

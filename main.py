@@ -103,7 +103,7 @@ MainScreen:
     # Label for displaying selected options
     MDLabel:
         id: result_label
-        text: "Selected Options: None"  # Initial text of the result label
+        text: ""  # Initial text of the result label
         halign: "center"
         size_hint_y: None
         height: self.texture_size[1]
@@ -208,24 +208,45 @@ class MyApp(MDApp):
         if (self.screen.ids.dropdown_btn_new.text == 'Select' or self.screen.ids.dropdown_btn_1.text == 'Select' or  self.screen.ids.dropdown_btn_2.text == 'Select' or self.screen.ids.dropdown_btn_3.text == 'Select' or self.screen.ids.dropdown_btn_4.text == 'Select') :
             self.screen.ids.result_label.text = 'Please select something'
             return None
-        selected_options = [
-            self.screen.ids.dropdown_btn_new.text,
-            self.screen.ids.dropdown_btn_1.text,
-            self.screen.ids.dropdown_btn_2.text,
-            self.screen.ids.dropdown_btn_3.text,
-            self.screen.ids.dropdown_btn_4.text
-        ]
+        #selected_options = [
+        #    self.screen.ids.dropdown_btn_new.text,
+        #    self.screen.ids.dropdown_btn_1.text,
+        #    self.screen.ids.dropdown_btn_2.text,
+        #    self.screen.ids.dropdown_btn_3.text,
+        #    self.screen.ids.dropdown_btn_4.text
+        #]
         # Display the selected options and the index of the first dropdown item
-        result_text = f"Selected Options: {', '.join(selected_options)}"
-        if self.selected_new_index is not None:
-            result_text += f"\nIndex of first dropdown: {self.selected_new_index}"
+        #result_text = f"Selected Options: {', '.join(selected_options)}"
+        #if self.selected_new_index is not None:
+        #    result_text += f"\nIndex of first dropdown: {self.selected_new_index}"
         #print(self.list2[self.selected_new_index])
-        
+        total_jades = 0
         daily = Jade_Calc.daily(days=Calc_Days.calc_delta(self.list2[self.selected_new_index]))
-        print(daily)
+        #print(daily)
+        total_jades += daily
         weekly_su = Jade_Calc.weekly_su(weeks=Calc_Weeks.calc_delta(self.list2[self.selected_new_index]) ,eq_level=int(self.screen.ids.dropdown_btn_1.text))
-        print(weekly_su)
-        self.screen.ids.result_label.text = result_text
+        #print(weekly_su)
+        total_jades += weekly_su
+        as_jades = None
+        moc_jades = None
+        pf_jades = None
+        if Calc_Days.calculate_days_difference(date1_str=self.list2[self.selected_new_index],date2_str=self.list1[0]) < 0:
+            as_jades = Jade_Calc.as_stars(int(self.screen.ids.dropdown_btn_4.text))
+        if Calc_Days.calculate_days_difference(date1_str=self.list2[self.selected_new_index],date2_str=self.list1[1]) < 0:
+            moc_jades = Jade_Calc.as_stars(int(self.screen.ids.dropdown_btn_2.text))
+        if Calc_Days.calculate_days_difference(date1_str=self.list2[self.selected_new_index],date2_str=self.list1[2]) < 0:
+            pf_jades = Jade_Calc.as_stars(int(self.screen.ids.dropdown_btn_3.text))
+        if as_jades:
+            #print(as_jades)
+            total_jades = as_jades
+        if moc_jades:
+            #print(moc_jades)
+            total_jades += moc_jades
+        if pf_jades:
+            #print(pf_jades)
+            total_jades += pf_jades
+        self.screen.ids.result_label.text = 'You can aquire ' + str(total_jades) + ' stellar jades'
+        
 
 # Run the app
 if __name__ == '__main__':
