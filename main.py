@@ -205,6 +205,9 @@ class MyApp(MDApp):
     # Method to handle the Submit button press
     def on_button_press(self):
         # Get the selected options from all dropdowns
+        if (self.screen.ids.dropdown_btn_new.text == 'Select' or self.screen.ids.dropdown_btn_1.text == 'Select' or  self.screen.ids.dropdown_btn_2.text == 'Select' or self.screen.ids.dropdown_btn_3.text == 'Select' or self.screen.ids.dropdown_btn_4.text == 'Select') :
+            self.screen.ids.result_label.text = 'Please select something'
+            return None
         selected_options = [
             self.screen.ids.dropdown_btn_new.text,
             self.screen.ids.dropdown_btn_1.text,
