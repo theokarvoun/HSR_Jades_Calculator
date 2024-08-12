@@ -116,32 +116,33 @@ class MainScreen(MDBoxLayout):
 
 # Define the main application class
 class MyApp(MDApp):
-    list1 = None
-    list2 = None
+    list1 = list
+    list2 = list
     def build(self):
 
         url1 = "https://docs.google.com/spreadsheets/d/12SYPRGPIVJ2-bY01ksF4aqdinZDbyD-LN2ipeB5i6T0/export?format=csv&gid=0"
         url2 = "https://docs.google.com/spreadsheets/d/140MawDp6uzxSR6lgICO4USXKe7QektrSHRstomDdsVs/export?format=csv&gid=0"
         Scraper.scrapeToFile(data=Scraper.convert_to_string(Scraper.scrape(url1)),name='Data',extension='.txt')
         Scraper.scrapeToFile(data=Scraper.convert_to_string(Scraper.scrape(url2)),name='Data2',extension='.txt')
-        list1 = reader.extractDates(reader.readFileAsList(name='Data',extension='.txt'))
-        list2 = reader.extractDates(reader.readFileAsList(name='Data2',extension='.txt'))
+        self.list1 = reader.extractDates(reader.readFileAsList(name='Data',extension='.txt'))
+        self.list2 = reader.extractDates(reader.readFileAsList(name='Data2',extension='.txt'))
         text = reader.extractText(reader.readFileAsList(name='Data2',extension='.txt'))
         # Load the KV string and set it as the root widget
         self.screen = Builder.load_string(KV)
 
         # Initial menu items for dropdowns
-        menu_items_new = [{"text": f"{text[i]}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{text[i]}": self.set_item_new(x)} for i in range(3)]
+        self.menu_items_new = [{"text": f"{text[i]}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{text[i]}", index=i: self.set_item_new(x, index)} for i in range(3)]
         menu_items_1 = [{"text": f"{i}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i}": self.set_item_1(x)} for i in range(7)]
         self.menu_items_2_set_1 = [{"text": f"{i}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i}": self.set_item_2(x)} for i in range(0,13)]
         self.menu_items_2_set_2 = [{"text": f"{i}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i}": self.set_item_2(x)} for i in range(0, 39, 3)]
         menu_items_3 = [{"text": f"{i}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i}": self.set_item_3(x)} for i in range(13)]
         menu_items_4 = [{"text": f"{i}", "viewclass": "OneLineListItem", "on_release": lambda x=f"{i}": self.set_item_4(x)} for i in range(13)]
 
+
         # Create dropdown menus for each button
         self.menu_new = MDDropdownMenu(
             caller=self.screen.ids.dropdown_btn_new,
-            items=menu_items_new,  # The options for the new dropdown
+            items=self.menu_items_new,  # The options for the new dropdown
             width_mult=4,  # Width multiplier for the dropdown menu
         )
 
@@ -169,11 +170,13 @@ class MyApp(MDApp):
             width_mult=4,
         )
 
+        self.selected_new_index = None  # To store the index of the selected item from the new dropdown
         return self.screen
 
     # Methods to set the selected item for each dropdown
-    def set_item_new(self, text_item):
+    def set_item_new(self, text_item, index):
         self.screen.ids.dropdown_btn_new.text = text_item
+        self.selected_new_index = index  # Store the index of the selected item
         self.menu_new.dismiss()  # Close the dropdown menu after selection
 
     def set_item_1(self, text_item):
@@ -209,8 +212,15 @@ class MyApp(MDApp):
             self.screen.ids.dropdown_btn_3.text,
             self.screen.ids.dropdown_btn_4.text
         ]
-        # Display the selected options in the result label
-        self.screen.ids.result_label.text = f"Selected Options: {', '.join(selected_options)}"
+        # Display the selected options and the index of the first dropdown item
+        result_text = f"Selected Options: {', '.join(selected_options)}"
+        if self.selected_new_index is not None:
+            result_text += f"\nIndex of first dropdown: {self.selected_new_index}"
+        #print(self.list2[self.selected_new_index])
+        
+        daily = Jade_Calc.daily(days=Calc_Days.calc_delta(self.list2[self.selected_new_index]))
+        print(daily)
+        self.screen.ids.result_label.text = result_text
 
 # Run the app
 if __name__ == '__main__':
